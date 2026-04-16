@@ -144,6 +144,7 @@ void ARunOnTheDesertPawn::Brake(const FInputActionValue& Value)
 void ARunOnTheDesertPawn::StartBrake(const FInputActionValue& Value)
 {
 	// route the input
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Test"));
 	DoBrakeStart();
 }
 
