@@ -73,6 +73,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* ResetVehicleAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* GoToCheckpointAction;
+
 	/** Keeps track of which camera is active */
 	bool bFrontCameraActive = false;
 
@@ -94,6 +97,12 @@ public:
 	ARunOnTheDesertPawn();
 
 	// Begin Pawn interface
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Checkpoint")
+	FVector currentCheckpointPosition;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Checkpoint")
+	FVector initialCheckpointPosition;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
@@ -140,6 +149,8 @@ protected:
 	/** Handles reset vehicle input */
 	void ResetVehicle(const FInputActionValue& Value);
 
+	void GoToCheckpoint(const FInputActionValue& Value);
+
 public:
 
 	/** Handle steering input by input actions or mobile interface */
@@ -181,6 +192,9 @@ public:
 	/** Handle reset vehicle input by input actions or mobile interface */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void DoResetVehicle();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void DoGoToCheckpoint();
 
 protected:
 

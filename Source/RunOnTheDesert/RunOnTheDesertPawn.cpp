@@ -85,6 +85,8 @@ void ARunOnTheDesertPawn::SetupPlayerInputComponent(class UInputComponent* Playe
 
 		// reset the vehicle 
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &ARunOnTheDesertPawn::ResetVehicle);
+
+		EnhancedInputComponent->BindAction(GoToCheckpointAction, ETriggerEvent::Triggered, this, &ARunOnTheDesertPawn::GoToCheckpoint);
 	}
 	else
 	{
@@ -184,6 +186,12 @@ void ARunOnTheDesertPawn::ResetVehicle(const FInputActionValue& Value)
 	DoResetVehicle();
 }
 
+void ARunOnTheDesertPawn::GoToCheckpoint(const FInputActionValue& Value)
+{
+	// route the input
+	DoResetVehicle();
+}
+
 void ARunOnTheDesertPawn::DoSteering(float SteeringValue)
 {
 	// add the input
@@ -259,7 +267,24 @@ void ARunOnTheDesertPawn::DoToggleCamera()
 void ARunOnTheDesertPawn::DoResetVehicle()
 {
 	// reset to a location slightly above our current one
-	FVector ResetLocation = GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
+	FVector ResetLocation = currentCheckpointPosition;
+
+	// reset to our yaw. Ignore pitch and roll
+	FRotator ResetRotation = GetActorRotation();
+	ResetRotation.Pitch = 0.0f;
+	ResetRotation.Roll = 0.0f;
+
+	// teleport the actor to the reset spot and reset physics
+	SetActorTransform(FTransform(ResetRotation, ResetLocation, FVector::OneVector), false, nullptr, ETeleportType::TeleportPhysics);
+
+	GetMesh()->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+	GetMesh()->SetPhysicsLinearVelocity(FVector::ZeroVector);
+}
+
+void ARunOnTheDesertPawn::DoGoToCheckpoint()
+{
+	// reset to a location slightly above our current one
+	FVector ResetLocation = initialCheckpointPosition;
 
 	// reset to our yaw. Ignore pitch and roll
 	FRotator ResetRotation = GetActorRotation();
